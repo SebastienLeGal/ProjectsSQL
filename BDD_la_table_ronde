@@ -1,0 +1,195 @@
+seb@seb-ThinkPad-T440p:~$ sudo
+usage: sudo -h | -K | -k | -V
+usage: sudo -v [-AknS] [-g group] [-h host] [-p prompt] [-u user]
+usage: sudo -l [-AknS] [-g group] [-h host] [-p prompt] [-U user] [-u user] [command]
+usage: sudo [-AbEHknPS] [-r role] [-t type] [-C num] [-g group] [-h host] [-p prompt] [-T timeout] [-u
+            user] [VAR=value] [-i|-s] [<command>]
+usage: sudo -e [-AknS] [-r role] [-t type] [-C num] [-g group] [-h host] [-p prompt] [-T timeout] [-u
+            user] file ...
+seb@seb-ThinkPad-T440p:~$ sudo su
+[sudo] Mot de passe de seb : 
+root@seb-ThinkPad-T440p:/home/seb# mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 32
+Server version: 8.0.20-0ubuntu0.20.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE kaamelott;
+ERROR 1007 (HY000): Can't create database 'kaamelott'; database exists
+mysql> SHOW TABLE knight;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'knight' at line 1
+mysql> SHOW TABLES
+    -> ;
+ERROR 1046 (3D000): No database selected
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| kaamelott          |
+| mysql              |
+| performance_schema |
+| sys                |
+| wild               |
+| wild_db_quest      |
++--------------------+
+7 rows in set (0.01 sec)
+
+mysql> USE kaamelott;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> SHOW kaamelott;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'kaamelott' at line 1
+mysql> SHOW TABLES;
++---------------------+
+| Tables_in_kaamelott |
++---------------------+
+| knight              |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> USE knight;
+ERROR 1049 (42000): Unknown database 'knight'
+mysql> DESCRIBE knight;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int         | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(80) | NO   |     | NULL    |                |
+| age   | int         | NO   |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO knight (name, age) VALUES ('arthur',40)
+    -> VALUES ('perceval',35)
+    -> VALUES ('lancelot',38)
+    -> VALUES ('highlander',250)
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'VALUES ('perceval',35)
+VALUES ('lancelot',38)
+VALUES ('highlander',250)' at line 2
+mysql> INSERT INTO knight (name,age)
+    -> VALUES ('arthur',40)
+    -> VALUES ('perceval',35)
+    -> VALUES ('lancelot',38)
+    -> VALUES ('highlander',250)
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'VALUES ('perceval',35)
+VALUES ('lancelot',38)
+VALUES ('highlander',250)' at line 3
+mysql> INSERT INTO knight (name,age)
+INSERT INTO knight (name,age)
+^C
+mysql> VALUES ('arthur',40)                             
+VALUES ('arthur',40)
+^C
+mysql> VALUES ('perceval',35)
+    -> VALUES ('lancelot',38)
+    -> VALUES ('highlander',250)
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '('perceval',35)
+VALUES ('lancelot',38)
+VALUES ('highlander',250)' at line 1
+mysql> INSERT INTO knight (name,age)
+    -> VALUES ('arthur',40);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO knight (name,age) VALUES ('perceval',38);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO knight (name,age) VALUES ('lancelot',35);
+INSERT INTO knight (name,age) VALUES ('lancelot',35);
+^C
+mysql> INSERT INTO knight (name,age) VALUES ('highlander',250);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT name FROM knight;
++------------+
+| name       |
++------------+
+| arthur     |
+| arthur     |
+| perceval   |
+| highlander |
++------------+
+4 rows in set (0.00 sec)
+
+mysql> UPDATE knight SET age=36 WHERE name='Perceval';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT name FROM knight WHERE age>37;
++------------+
+| name       |
++------------+
+| arthur     |
+| arthur     |
+| highlander |
++------------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE knight ADD is_dubbed BOOLEAN NULL;
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> UPDATE knight SET is_dubbed=TRUE;
+Query OK, 4 rows affected (0.00 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+mysql> UPDATE knight SET is_dubbed=FALSE WHERE name='Perceval';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> DELETE FROM knight WHERE name='Lancelot';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> TRUNCATE TABLE knight;
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> DROP TABLE knight;
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> CREATE TABLE weapon ( id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(50) );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> INSERT INTO weapon (name) VALUES ('Sword');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO weapon (name) VALUES ('Bow');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO weapon (name) VALUES ('Lance');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO weapon (name) VALUES ('Catapult');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> UPDATE weapon SET name='whip' WHERE name='Bow';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> DELETE FROM weapon WHERE name='Lance';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from weapon;
++----+----------+
+| id | name     |
++----+----------+
+|  1 | Sword    |
+|  2 | whip     |
+|  4 | Catapult |
++----+----------+
+3 rows in set (0.00 sec)
+
+mysql> gedit
+    -> quit
+
